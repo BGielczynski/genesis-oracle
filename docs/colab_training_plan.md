@@ -159,3 +159,11 @@ plt.show()
 print(f"Max Training MAE: {np.max(mae_train):.6f}")
 print(f"Max Testing MAE:  {np.max(mae_test):.6f}")
 ```
+
+---
+
+## 🏁 Expected Results
+Once the training is complete, you should see a plot similar to the one below, where the anomaly is clearly visible as a spike in the MAE:
+
+![Expected Anomaly Detection](anomaly_detection_report_Ex3_new.png)
+
