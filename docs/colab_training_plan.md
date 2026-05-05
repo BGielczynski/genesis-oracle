@@ -1,20 +1,25 @@
-# 🚀 Colab Training Plan: PhysicsAutoencoder on TPU
+# 🚀 Colab Training Plan: PhysicsAutoencoder (TPU / GPU / CPU)
 
-This document provides a step-by-step guide and the corresponding code cells to train and evaluate the PhysicsAutoencoder using Google Colab with a TPU (v5e-1) runtime.
+This document provides a step-by-step guide and the corresponding code cells to train and evaluate the PhysicsAutoencoder using Google Colab. Support for TPU, GPU (T4), and CPU is included.
 
 ---
 
-## 🛠 Step 1: Environment & TPU Setup
-This cell configures the Keras backend to JAX, handles the repository paths, and initializes the TPU.
+## 🛠 Step 1: Environment & Hardware Setup
+This cell configures the Keras backend, handles repository paths, and verifies the hardware (TPU, GPU, or CPU).
 
 ```python
 import os
 import sys
 
-# Set Keras backend to JAX
+# 1. Set Keras backend to JAX
 os.environ["KERAS_BACKEND"] = "jax"
 
-# Repository Setup (Clone if not already present)
+# 2. Hardware Selection (Uncomment to force a specific platform, otherwise JAX auto-detects)
+# os.environ["JAX_PLATFORMS"] = "tpu"   # Use for TPU v5e / v2
+# os.environ["JAX_PLATFORMS"] = "cuda"  # Use for GPU T4 / L4 / A100
+# os.environ["JAX_PLATFORMS"] = "cpu"   # Use for CPU-only mode
+
+# 3. Repository Setup
 repo_url = "https://github.com/BGielczynski/genesis-oracle"
 repo_name = "genesis-oracle"
 
@@ -28,13 +33,17 @@ if os.getcwd() not in sys.path:
 import jax
 import keras
 
-# Verify TPU
+# 4. Verify Hardware
 devices = jax.devices()
 print(f"JAX Devices: {devices}")
-if "tpu" in devices[0].device_kind.lower():
+device_type = devices[0].device_kind.lower()
+
+if "tpu" in device_type:
     print(f"✅ Success! Running on TPU: {devices[0].device_kind}")
+elif "gpu" in device_type or "cuda" in device_type:
+    print(f"🚀 Success! Running on GPU (T4): {devices[0].device_kind}")
 else:
-    print(f"⚠️ Warning: TPU not found. JAX is using: {devices[0].device_kind}")
+    print(f"💻 Note: Running on CPU: {devices[0].device_kind}")
 ```
 
 ---
@@ -132,21 +141,21 @@ import numpy as np
 reconstructions_train = autoencoder.predict(X_train, batch_size=256)
 reconstructions_test = autoencoder.predict(X_test, batch_size=256)
 
-# 2. Calculate MSE per window
-mse_train = np.mean(np.square(X_train - reconstructions_train), axis=1)
-mse_test = np.mean(np.square(X_test - reconstructions_test), axis=1)
+# 2. Calculate MAE per window
+mae_train = np.mean(np.abs(X_train - reconstructions_train), axis=1)
+mae_test = np.mean(np.abs(X_test - reconstructions_test), axis=1)
 
 # 3. Plot Comparison
 plt.figure(figsize=(12, 6))
-plt.plot(mse_train, label='Reconstruction Error (Normal)', alpha=0.7)
-plt.plot(range(len(mse_train), len(mse_train) + len(mse_test)), mse_test, label='Reconstruction Error (Anomaly)', color='red', alpha=0.7)
-plt.axhline(y=np.max(mse_train) * 2, color='black', linestyle='--', label='Anomaly Threshold')
-plt.title('Anomaly Detection: Reconstruction Error Comparison')
-plt.ylabel('Mean Squared Error')
+plt.plot(mae_train, label='Reconstruction Error (Normal)', alpha=0.7)
+plt.plot(range(len(mae_train), len(mae_train) + len(mae_test)), mae_test, label='Reconstruction Error (Anomaly)', color='red', alpha=0.7)
+plt.axhline(y=np.max(mae_train) * 1.5, color='black', linestyle='--', label='Anomaly Threshold')
+plt.title('Anomaly Detection: MAE Reconstruction Error Comparison')
+plt.ylabel('Mean Absolute Error')
 plt.xlabel('Window Index')
 plt.legend()
 plt.show()
 
-print(f"Max Training MSE: {np.max(mse_train):.6f}")
-print(f"Max Testing MSE:  {np.max(mse_test):.6f}")
+print(f"Max Training MAE: {np.max(mae_train):.6f}")
+print(f"Max Testing MAE:  {np.max(mae_test):.6f}")
 ```

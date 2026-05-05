@@ -68,32 +68,25 @@ def prepare_datasets(file_path="data/corrupted_signal.npy", window_size=50, spli
 
 class SignalCompression(layers.Layer):
     """
-    Custom layer to compress a 1D windowed signal into a lower-dimensional latent space.
+    Custom layer to compress a 1D windowed signal using Conv1D layers.
+    Utilizes local patterns and reduces temporal dimension.
     """
     def __init__(self, latent_dim=8, **kwargs):
         super().__init__(**kwargs)
         self.latent_dim = latent_dim
-
-    def build(self, input_shape):
-        # input_shape: (batch_size, window_size)
-        # We expect window_size=50
-        self.w = self.add_weight(
-            shape=(input_shape[-1], self.latent_dim),
-            initializer="glorot_uniform",
-            trainable=True,
-            name="compression_kernel"
-        )
-        self.b = self.add_weight(
-            shape=(self.latent_dim,),
-            initializer="zeros",
-            trainable=True,
-            name="compression_bias"
-        )
-        super().build(input_shape)
+        # Conv-Blocks to reduce (Batch, 50, 1) -> (Batch, 25, 16) -> (Batch, 13, 32)
+        self.conv1 = layers.Conv1D(filters=16, kernel_size=3, strides=2, padding="same", activation="relu")
+        self.conv2 = layers.Conv1D(filters=32, kernel_size=3, strides=2, padding="same", activation="relu")
+        self.flatten = layers.Flatten()
+        self.bottleneck = layers.Dense(latent_dim, activation="relu")
 
     def call(self, inputs):
-        # Forward pass: ReLU(inputs @ w + b)
-        return ops.relu(ops.matmul(inputs, self.w) + self.b)
+        # Input shape: (batch_size, window_size) -> (batch_size, 50, 1)
+        x = ops.expand_dims(inputs, axis=-1)
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.flatten(x)
+        return self.bottleneck(x)
 
     def get_config(self):
         config = super().get_config()
@@ -102,33 +95,29 @@ class SignalCompression(layers.Layer):
 
 class SignalExpansion(layers.Layer):
     """
-    Custom layer to expand the latent representation back to the original signal dimension.
+    Custom layer to expand the latent representation using Conv1DTranspose.
+    Reconstructs the original 1D signal sequence.
     """
     def __init__(self, output_dim=50, **kwargs):
         super().__init__(**kwargs)
         self.output_dim = output_dim
-
-    def build(self, input_shape):
-        # input_shape: (batch_size, latent_dim)
-        # We expect latent_dim=8
-        self.w = self.add_weight(
-            shape=(input_shape[-1], self.output_dim),
-            initializer="glorot_uniform",
-            trainable=True,
-            name="expansion_kernel"
-        )
-        self.b = self.add_weight(
-            shape=(self.output_dim,),
-            initializer="zeros",
-            trainable=True,
-            name="expansion_bias"
-        )
-        super().build(input_shape)
+        # Map back to (Batch, 13 * 32) then reshape to (Batch, 13, 32)
+        self.dense = layers.Dense(13 * 32, activation="relu")
+        self.reshape = layers.Reshape((13, 32))
+        # Up-sampling Blöcke: (13, 32) -> (26, 16) -> (52, 1)
+        self.deconv1 = layers.Conv1DTranspose(filters=16, kernel_size=3, strides=2, padding="same", activation="relu")
+        self.deconv2 = layers.Conv1DTranspose(filters=1, kernel_size=3, strides=2, padding="same")
+        # Crop 52 back to 50
+        self.cropping = layers.Cropping1D(cropping=(0, 2))
 
     def call(self, inputs):
-        # Forward pass: inputs @ w + b
-        # (Linear activation for reconstruction)
-        return ops.matmul(inputs, self.w) + self.b
+        x = self.dense(inputs)
+        x = self.reshape(x)
+        x = self.deconv1(x)
+        x = self.deconv2(x)
+        x = self.cropping(x)
+        # Final shape: (Batch, 50, 1) -> (Batch, 50)
+        return ops.squeeze(x, axis=-1)
 
     def get_config(self):
         config = super().get_config()
@@ -137,7 +126,7 @@ class SignalExpansion(layers.Layer):
 
 class PhysicsAutoencoder(keras.Model):
     """
-    Autoencoder model chaining SignalCompression and SignalExpansion.
+    Upgraded Convolutional Autoencoder for physical signal flows.
     """
     def __init__(self, window_size=50, latent_dim=8, **kwargs):
         super().__init__(**kwargs)
