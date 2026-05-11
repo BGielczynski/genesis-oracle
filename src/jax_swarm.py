@@ -1,5 +1,6 @@
 import jax
 import jax.numpy as jnp
+from functools import partial
 
 def oscillator_step(x, v, omega, dt=0.01, zeta=0.1):
     """
@@ -16,14 +17,13 @@ def oscillator_step(x, v, omega, dt=0.01, zeta=0.1):
     return new_x, new_v
 
 # Parallelize over the first dimension of x, v, and omega
-# This transforms our scalar logic into batch logic
 vmapped_step = jax.vmap(oscillator_step, in_axes=(0, 0, 0, None, None))
 
-@jax.jit
+@partial(jax.jit, static_argnames=['n_steps', 'dt', 'zeta'])
 def run_simulation(x, v, omega, n_steps=1000, dt=0.01, zeta=0.1):
     """
     JIT-compiled simulation loop. 
-    Uses jax.lax.scan to efficiently iterate over time steps without unrolling.
+    n_steps, dt, and zeta are marked static to allow JAX to optimize the loop.
     """
     def step_fn(state, _):
         x_curr, v_curr = state
