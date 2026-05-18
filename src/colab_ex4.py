@@ -28,7 +28,7 @@ colloc_pts, ic_pts, ic_vals, bc_pts, bc_vals = generate_pinn_data(subkey)
 
 # 2. Initialize Model and Optimizer
 model = HeatSurrogate()
-params = model.init(key, jnp.zeros((1,)), jnp.zeros((1,)))
+params = model.init(key, jnp.zeros(()), jnp.zeros(()))
 optimizer = optax.adam(learning_rate=1e-3)
 opt_state = optimizer.init(params)
 

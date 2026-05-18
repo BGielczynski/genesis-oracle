@@ -69,18 +69,18 @@ def compute_loss(params, colloc_pts, ic_pts, ic_vals, bc_pts, bc_vals):
     Computes the total loss combining physics, initial condition, and boundary conditions.
     """
     # 1. Physics Loss (Collocation Points)
-    x_c, t_c = colloc_pts[:, 0:1], colloc_pts[:, 1:2]
+    x_c, t_c = colloc_pts[:, 0], colloc_pts[:, 1]
     pde_res = vmap_pde_residual(params, x_c, t_c)
     loss_physics = jnp.mean(pde_res**2)
     
     # 2. Initial Condition (IC) Loss
-    x_ic, t_ic = ic_pts[:, 0:1], ic_pts[:, 1:2]
+    x_ic, t_ic = ic_pts[:, 0], ic_pts[:, 1]
     u_ic_pred = vmap_predict_u(params, x_ic, t_ic)
     u_ic_pred = u_ic_pred.reshape(-1, 1) # Ensure shape matches ic_vals (N, 1)
     loss_ic = jnp.mean((u_ic_pred - ic_vals)**2)
     
     # 3. Boundary Condition (BC) Loss
-    x_bc, t_bc = bc_pts[:, 0:1], bc_pts[:, 1:2]
+    x_bc, t_bc = bc_pts[:, 0], bc_pts[:, 1]
     u_bc_pred = vmap_predict_u(params, x_bc, t_bc)
     u_bc_pred = u_bc_pred.reshape(-1, 1)
     loss_bc = jnp.mean((u_bc_pred - bc_vals)**2)
@@ -97,8 +97,8 @@ if __name__ == "__main__":
     model = HeatSurrogate()
     
     # Create dummy inputs to initialize shapes (1 sample, 1 feature)
-    dummy_x = jnp.zeros((1,))
-    dummy_t = jnp.zeros((1,))
+    dummy_x = jnp.zeros(())
+    dummy_t = jnp.zeros(())
     
     params = model.init(key, dummy_x, dummy_t)
     print("Neural Surrogate Architecture initialized successfully.")
