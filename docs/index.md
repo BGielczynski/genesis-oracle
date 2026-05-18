@@ -24,3 +24,9 @@ The simulation script `src/ancients.py` was processed to analyze classical conti
 - **Data Folder Check:** The plot was verified to exist. (Note: The script defaults to the `docs/` folder for output storage; a copy is maintained in the workspace context).
 
 **Conclusion:** The physical systems were simulated accurately, and the visual output confirms the expected sinusoidal behavior for the pendulum and exponential behavior for the decay.
+
+## Week 5: Agentic Weaving & The Differentiable Fabric
+- **Project Genesis:** Developed a continuous Physics-Informed Neural Network (PINN) surrogate model in JAX/Flax to solve the 1D Heat Equation.
+- **Physics Loss:** Implemented exact analytical derivatives via `jax.grad` to enforce thermodynamic constraints natively during training.
+- **Visuals:** Generated a high-resolution, interactive 3D manifold of the temperature field. 
+- **Report:** View the final analysis and the transition to Fourier Neural Operators in the [Fabric Report](Fabric_Report.md).
