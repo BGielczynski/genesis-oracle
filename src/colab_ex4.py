@@ -1,10 +1,10 @@
 # ==========================================
 # CELL 1: Initialization & Environment Setup
 # ==========================================
-# Execute the following as bash commands in Colab:
-# !git clone https://github.com/BGiel/genesis-oracle.git
-# %cd genesis-oracle
-# !pip install -q jax jaxlib flax optax plotly tqdm
+# Run this cell directly in Colab
+!git clone https://github.com/BGielczynski/genesis-oracle.git
+%cd genesis-oracle
+!pip install -q jax jaxlib flax optax plotly tqdm
 
 import jax
 import jax.numpy as jnp
