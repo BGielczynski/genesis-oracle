@@ -48,5 +48,16 @@ We tested the system's defenses against a "BOOM" prompt injection attack.
 
 ---
 
+## 4. Structural Deep Dive (Exercise 6)
+### 6.1 Transformer Mechanism Analysis
+The Transformer architecture utilizes the **Scaled Dot-Product Attention** mechanism to compute the relevance of every data point to every other within an entire context window concurrently. Unlike classical LSTMs that process information sequentially and suffer from vanishing gradients over long sequences, this approach enables massively parallel analysis. This paradigm shift allows models to capture complex causal dependencies in long simulation telemetry streams without losing information from the distant past.
+
+### 6.2 Agentic Alignment with Tunix/GRPO
+We analyzed the **Google Tunix** framework and its use of **Group Relative Policy Optimization (GRPO)** for post-training alignment. 
+- **Mechanism:** GRPO optimizes policies by comparing rewards within a group of outputs, providing a more stable and efficient fine-tuning process compared to standard PPO.
+- **Application:** For simulation agents, Tunix can be used to optimize the safe invocation of terminal tools. Through RL feedback, the agent learns to validate boundary conditions (e.g., file paths, system resources) before execution, preventing destructive commands and maintaining system integrity.
+
+---
+
 ## Conclusion
 The Neo-Simulacrum is now fully cognitive. Simulations are self-auditing, parameters are self-optimizing, and the core matrix is hardened against adversarial interference.
