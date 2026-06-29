@@ -13,22 +13,9 @@
 \usepackage{lmodern}
 \usepackage{array}
 \usepackage{xcolor}
+\usepackage{graphicx}
 
 \newcommand{\code}[1]{\texttt{#1}}
-
-\newcommand{\screenshotplaceholder}[2]{%
-  \begin{center}
-    \fbox{%
-      \begin{minipage}[c][0.26\textheight][c]{0.88\textwidth}
-        \centering
-        \Large #1\\[8pt]
-        \normalsize #2\\[10pt]
-        \color{gray}\rule{0.72\textwidth}{0.4pt}\\[6pt]
-        Screenshot hier einfuegen
-      \end{minipage}
-    }
-  \end{center}
-}
 
 \begin{document}
 
@@ -75,12 +62,19 @@ Problem-Sets/Set10/
     agent.py
   docs/
     ADK_Report.md
+    Screenshot-1.png
+    Screenshot-2.png
 \end{verbatim}
 
 Die lokale Datei \code{cognitive\_core/.env} enthaelt den API-Key fuer die Web UI
-und ist durch \code{.gitignore} von der Abgabe ausgeschlossen.
+und ist durch \code{.gitignore} von der Abgabe ausgeschlossen. Lokale ADK-
+Laufzeitdaten unter \code{.adk/} werden ebenfalls nicht als Abgabeartefakte
+versioniert.
 
-\screenshotplaceholder{Screenshot 1: Directory Tree}{Hier den Terminal-Screenshot der erzeugten ADK-Struktur einfuegen.}
+\begin{center}
+  \textbf{Screenshot 1: Directory Tree}\\[6pt]
+  \includegraphics[width=0.92\textwidth]{docs/Screenshot-1.png}
+\end{center}
 
 \section*{4. Agent-Konfiguration}
 
@@ -88,7 +82,7 @@ Die vier Kernparameter aus der Aufgabenstellung wurden wie folgt gesetzt:
 
 \begin{verbatim}
 root_agent = Agent(
-    model="gemini-3.5-flash",
+    model=os.getenv("OBSERVER_PRIME_MODEL", "gemini-3.5-flash"),
     name="observer_prime",
     description=(
         "A highly analytical agent specialized in managing physical reactor "
@@ -103,6 +97,12 @@ Die Instruction beschreibt Observer-Prime als kalten, streng logischen Agenten,
 dessen primaeres Ziel die Stabilisierung einer mathematischen Physik-Engine ist.
 Der Agent soll seine knappe Begruendung vor der Aktion nennen und bei Warnungen
 selbst einen sichereren Parameter berechnen.
+
+Der Standardwert des Modells bleibt die Aufgabenblatt-Vorgabe
+\code{gemini-3.5-flash}. Wegen wiederholter \code{503 UNAVAILABLE}-Antworten
+bei hoher Modelllast kann temporaer ueber \code{OBSERVER\_PRIME\_MODEL} in der
+lokalen \code{.env} ein Flash-Fallback gesetzt werden, ohne den Standardwert im
+Abgabecode zu veraendern.
 
 \section*{5. Gebundenes Physics Tool}
 
@@ -134,11 +134,24 @@ adjust_reactor_temperature(45)
 
 \section*{6. Web-UI-Nachweise}
 
-\screenshotplaceholder{Screenshot 2: ADK Web UI Memory Test}{Chat-Sequenz mit gespeichertem Parameter, Haiku und erfolgreichem Abruf des Parameters.}
+Agent-Auswahl: In der ADK Web UI wurde der Agent \code{cognitive\_core}
+ausgewaehlt. Dieser Agent laedt intern \code{observer\_prime} aus
+\code{cognitive\_core/agent.py}.
 
-\screenshotplaceholder{Screenshot 3: Tool Warning}{Agent ruft das Tool mit +80K auf und erhaelt die Overheat-Warnung.}
+\begin{center}
+  \textbf{Screenshot 2: ADK Web UI Memory Test und Tool-Retry}\\[6pt]
+  \includegraphics[width=0.98\textwidth]{docs/Screenshot-2.png}
+\end{center}
 
-\screenshotplaceholder{Screenshot 4: Autonomous Retry}{Agent berechnet einen sicheren Wert und erreicht einen Success-Status.}
+Der Screenshot zeigt den Memory-Test mit dem gespeicherten Parameter
+\code{0.045}, einem Kontextwechsel durch das Haiku und dem anschliessenden
+korrekten Abruf des Parameters. Derselbe Screenshot dokumentiert auch den
+vollstaendigen Tool-Test: Der erste Tool-Aufruf verwendet einen
+Temperaturanstieg von \code{80K} und fuehrt zur Overheat-Warnung. Danach
+berechnet der Agent selbststaendig einen sichereren Wert und erreicht mit einem
+zweiten Tool-Aufruf von \code{10K} einen Success-Status. Damit deckt Screenshot
+2 sowohl den Memory-Nachweis als auch die geforderte autonome
+Tool-Calling-Schleife ab.
 
 \section*{7. Schritt-fuer-Schritt-Ablauf fuer die Web UI}
 
@@ -176,7 +189,7 @@ Write a haiku about the beauty of matrix multiplication.
 What was the critical system parameter I told you to memorize earlier?
 \end{verbatim}
 
-  \item Erstelle den Screenshot fuer den Memory-Test und fuege ihn bei Screenshot 2 ein.
+  \item Der Screenshot fuer den Memory-Test ist als Screenshot 2 in diese Dokumentation eingebunden.
 
   \item Fuehre den Tool-Test aus:
 \begin{verbatim}
@@ -186,13 +199,12 @@ calculate a safer parameter and retry the tool until you achieve a
 'Success' status.
 \end{verbatim}
 
-  \item Erstelle Screenshots fuer die Warnung und den autonomen Retry und fuege sie bei Screenshot 3 und Screenshot 4 ein.
+  \item Der vorhandene Screenshot 2 dokumentiert bereits die Warnung und den autonomen Retry. Falls du einen separaten Detailnachweis willst, kann ein weiterer Screenshot optional im Anhang ergaenzt werden.
 
-  \item Fuer den Struktur-Screenshot kannst du aus dem Set10-Ordner ausfuehren:
+  \item Der Struktur-Screenshot wurde aus dem Set10-Ordner mit folgendem Befehl erzeugt:
 \begin{verbatim}
 tree /F
 \end{verbatim}
-  Fuege diesen Screenshot bei Screenshot 1 ein.
 
   \item Pruefe vor dem Commit:
 \begin{verbatim}

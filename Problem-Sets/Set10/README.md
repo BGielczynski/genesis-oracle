@@ -21,6 +21,16 @@ uv run adk web
 
 Open `http://127.0.0.1:8000` and select `cognitive_core`.
 
+## Temporary Model Fallback
+
+The assignment model remains `gemini-3.5-flash` by default. If Google returns repeated `503 UNAVAILABLE` high-demand errors, add this temporary line to `cognitive_core/.env`:
+
+```env
+OBSERVER_PRIME_MODEL="gemini-2.5-flash"
+```
+
+Restart `uv run adk web` after changing the `.env` file. Remove the line again if you want to return to the exact assignment model.
+
 ## Web UI Test Prompts
 
 ```text

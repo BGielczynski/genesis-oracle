@@ -5,3 +5,5 @@
 .env
 sessions/
 artifacts/
+.adk/
+**/.adk/

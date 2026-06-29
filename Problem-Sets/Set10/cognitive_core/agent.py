@@ -1,4 +1,5 @@
 from google.adk.agents.llm_agent import Agent
+import os
 
 
 def adjust_reactor_temperature(delta_t: float) -> str:
@@ -17,7 +18,7 @@ def adjust_reactor_temperature(delta_t: float) -> str:
 
 
 root_agent = Agent(
-    model="gemini-3.5-flash",
+    model=os.getenv("OBSERVER_PRIME_MODEL", "gemini-3.5-flash"),
     name="observer_prime",
     description=(
         "A highly analytical agent specialized in managing physical reactor "
