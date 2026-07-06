@@ -1,8 +1,14 @@
 .venv/
 data/
 __pycache__/
+.ipynb_checkpoints/
+.adk/
+*.log
+*.aux
 .env
 *.env
+!.env.example
 .secrets
 credentials.json
 *.key
+Problem-Sets/Set11/science-skills/

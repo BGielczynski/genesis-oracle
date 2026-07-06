@@ -1,0 +1,42 @@
+{
+  "status": "success",
+  "query": "thermodynamic simulation parameters for advanced fission reactors",
+  "agent_name": "scholar_prime",
+  "source_paper": {
+    "title": "Mock validation excerpt for UO2 material parameters",
+    "authors": [],
+    "published": null,
+    "arxiv_id": null,
+    "doi": "10.1016/j.jnucmat.2019.01.001",
+    "pdf_url": null
+  },
+  "extraction": {
+    "material": "Uranium Dioxide",
+    "doi": "10.1016/j.jnucmat.2019.01.001",
+    "parameters": [
+      {
+        "parameter": "thermal_conductivity",
+        "value": 3.5,
+        "unit": "W/(m*K)",
+        "evidence": "reported density is 10.97 g/cm3, the melting point is 3120 K, and the baseline thermal conductivity is 3.5 W/(m*K). Reference DOI: 10.1016/j.jnucmat.2019.01.001.",
+        "confidence": "medium"
+      },
+      {
+        "parameter": "melting_point",
+        "value": 3120.0,
+        "unit": "K",
+        "evidence": "m Dioxide (UO2) reactor fuel material. The reported density is 10.97 g/cm3, the melting point is 3120 K, and the baseline thermal conductivity is 3.5 W/(m*K). Reference DOI: 10.1016/j",
+        "confidence": "medium"
+      },
+      {
+        "parameter": "density",
+        "value": 10.97,
+        "unit": "g/cm3",
+        "evidence": "This paper studies Uranium Dioxide (UO2) reactor fuel material. The reported density is 10.97 g/cm3, the melting point is 3120 K, and the baseline thermal conductivity is 3.5 W/(m",
+        "confidence": "medium"
+      }
+    ],
+    "extracted_from_text_preview": "This paper studies Uranium Dioxide (UO2) reactor fuel material. The reported density is 10.97 g/cm3, the melting point is 3120 K, and the baseline thermal conductivity is 3.5 W/(m*K). Reference DOI: 10.1016/j.jnucmat.2019.01.001."
+  },
+  "note": "Generated with --mock because the live arXiv endpoint is optional for local validation."
+}
