@@ -1,0 +1,87 @@
+<div class="space-y-8">
+    <div>
+        <span class="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 text-xs font-mono font-bold uppercase tracking-wider border border-slate-750">Protocol Engineering</span>
+        <h3 class="text-2xl font-black text-white mt-2">Problem Set 12: The Great Spreeland Logistics Sync</h3>
+        <p class="text-sm text-slate-400 mt-1">Deadline: July 19, 2026 at 23:59 | Weight: 10% of module grade</p>
+    </div>
+
+    <!-- Scenario Introduction -->
+    <div class="p-6 glass-card rounded-2xl bg-cyan-500/5 border border-cyan-500/20 space-y-3">
+        <h4 class="text-cyan-400 font-bold flex items-center gap-2">
+            <span>🚛</span> The Scenario
+        </h4>
+        <p class="text-sm text-slate-300 leading-relaxed">
+            In 2026, the Spreeland region is facing a massive logistics bottleneck. Local organic farmers need to get their harvest to Cottbus, but river levels are fluctuating, and several bridges are under automated maintenance. Your <strong>objective</strong> is to design a <strong>Multi-Agent System</strong> that uses the new <strong>Agentic Protocol Stack</strong> to orchestrate a resilient supply chain.
+        </p>
+        <div class="mt-4 rounded-xl overflow-hidden border border-cyan-500/30 shadow-2xl shadow-cyan-500/5">
+            <img src="assets/img/week12_logistics.png" alt="Spreeland Logistics Hub 2026" class="w-full h-auto object-cover">
+            <div class="p-2 bg-slate-900/80 text-[10px] font-mono text-cyan-400 text-center uppercase tracking-widest">
+                Concept Visual: Automated Logistics Hub - Burg/Spreewald
+            </div>
+        </div>
+    </div>
+
+    <!-- Exercises -->
+    <div class="space-y-6">
+        <div>
+            <h4 class="text-lg font-bold text-white border-b border-slate-800 pb-2">Exercise 1: Protocol Architecture Design</h4>
+            <p class="text-sm text-slate-400 mt-2 italic">Which tool for which job?</p>
+            <p class="text-sm text-slate-300 leading-relaxed mt-2">
+                Describe how you would implement the following interactions using <strong>MCP, A2A, UCP, AP2, A2UI,</strong> and <strong>AG-UI</strong>:
+            </p>
+            <ul class="list-disc pl-6 text-sm text-slate-300 space-y-2 mt-2">
+                <li><strong>Infrastructure Discovery:</strong> How does your "Dispatch Agent" check real-time bridge status from the City's PostgreSQL database?</li>
+                <li><strong>Expert Consultation:</strong> How does your agent find and query a specialized "Weather-Predictor Agent" built by a different team?</li>
+                <li><strong>Secure Fulfillment:</strong> How do you ensure the agent's wholesale purchase of 2 tons of gherkins is both authorized by the owner and cryptographically verifiable?</li>
+                <li><strong>Dynamic Visualization:</strong> How do you present a live delivery dashboard to the user without writing custom React/Flutter code?</li>
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="text-lg font-bold text-white border-b border-slate-800 pb-2">Exercise 2: Implementing the Dispatcher Swarm</h4>
+            <p class="text-sm text-slate-300 leading-relaxed mt-2">
+                Using the <strong>google-adk</strong>, implement a starter script for the <code>SpreelandDispatcher</code>. Your agent must discover tools via MCP and communicate its reasoning to the user via a streaming interaction.
+            </p>
+
+            <div class="space-y-2 mt-4">
+                <h5 class="text-xs font-bold text-slate-500 font-mono uppercase">Reference Snippet:</h5>
+                <pre class="bg-slate-950 p-4 rounded-xl border border-slate-850 overflow-x-auto text-xs font-mono text-cyan-400"><code class="language-python">from google.adk.agents import Agent
+from google.adk.tools.mcp_tool import McpToolset
+from google.adk.tools.mcp_tool.mcp_session_manager import StdioConnectionParams
+from mcp import StdioServerParameters
+
+# 1. Connect to Infrastructure Data via MCP
+infra_tools = McpToolset(connection_params=StdioConnectionParams(
+    server_params=StdioServerParameters(
+        command="npx", args=["-y", "@spreeland/bridge-mcp-server"],
+        env={"API_KEY": "SPREE_2026_SECRET"})
+))
+
+# 2. Define the Dispatcher Agent
+dispatcher = Agent(
+    name="Spreeland_Dispatcher",
+    instruction="""You coordinate logistics in Spreeland. 
+    1. Check bridge status. 
+    2. Negotiate with A2A supplier agents. 
+    3. Output status via A2UI cards.""",
+    tools=[infra_tools]
+)
+
+# 3. Handle Interactive Streaming (AG-UI pattern)
+# ... Implementation required for exercise submission</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submission Details -->
+    <div class="p-6 glass-card rounded-2xl border-l-4 border-amber-500 bg-amber-500/5 space-y-3">
+        <h4 class="text-amber-400 font-mono text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+            <span>💾</span> Submission Requirements
+        </h4>
+        <ul class="list-disc pl-6 text-xs text-slate-300 space-y-1">
+            <li><strong>Design Document:</strong> A PDF explaining the choice of protocols for each sub-exercise.</li>
+            <li><strong>Python Source:</strong> A working script demonstrating MCP tool discovery and A2A negotiation logic.</li>
+            <li><strong>UI Schema:</strong> A JSON file containing a sample <code>A2UI</code> message that renders a delivery status card.</li>
+        </ul>
+    </div>
+</div>

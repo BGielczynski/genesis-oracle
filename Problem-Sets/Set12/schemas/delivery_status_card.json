@@ -1,0 +1,70 @@
+{
+  "schema": "a2ui.delivery_status_card.v1",
+  "component": "DeliveryStatusCard",
+  "title": "Spreeland Logistics Sync",
+  "subtitle": "Burg/Spreewald to Cottbus harvest delivery",
+  "status": "rerouted",
+  "severity": "warning",
+  "route": {
+    "origin": "Burg/Spreewald Cooperative Hub",
+    "destination": "Cottbus Wholesale Market",
+    "selected_route_id": "SPREE-R2",
+    "estimated_arrival": "2026-07-18T15:40:00+02:00"
+  },
+  "bridges": [
+    {
+      "bridge_id": "BR-17",
+      "name": "Leipe North Bridge",
+      "status": "maintenance",
+      "capacity_tons": 0.0,
+      "eta_open": "2026-07-18T18:00:00+02:00"
+    },
+    {
+      "bridge_id": "BR-22",
+      "name": "Burg South Freight Bridge",
+      "status": "open",
+      "capacity_tons": 7.5,
+      "eta_open": null
+    }
+  ],
+  "weather": {
+    "agent_id": "weather-predictor-spreewald",
+    "route_id": "SPREE-R2",
+    "risk_level": "medium",
+    "river_level_trend": "rising",
+    "recommendation": "Use the southern freight bridge and avoid low-clearance river roads after 17:00."
+  },
+  "fulfillment": {
+    "supplier_agent_id": "supplier-agent-gurkenhof-lehde",
+    "item": "Spreewald gherkins",
+    "quantity_tons": 2.0,
+    "offer_price_eur": 3640.0,
+    "approval_status": "approved",
+    "payment_protocol": "AP2",
+    "commerce_context_protocol": "UCP"
+  },
+  "dispatcher": {
+    "agent_id": "Spreeland_Dispatcher",
+    "next_action": "Dispatch truck convoy via SPREE-R2 and monitor BR-22 capacity every 15 minutes.",
+    "stream_channel": "ag-ui-events"
+  },
+  "audit": {
+    "decision_id": "sync-20260718-spree-r2",
+    "intent_mandate_id": "intent-2t-gherkins-cottbus",
+    "cart_mandate_id": "cart-gherkins-3640eur",
+    "receipt_id": "receipt-gherkins-20260718-001",
+    "verification_hash": "sha256:246787598c18442548e7d4bc5fced6b97af01334cf424204bf11132de737955b"
+  },
+  "actions": [
+    {
+      "id": "approve-dispatch",
+      "label": "Approve Dispatch",
+      "kind": "primary"
+    },
+    {
+      "id": "request-weather-refresh",
+      "label": "Refresh Weather Risk",
+      "kind": "secondary"
+    }
+  ]
+}
